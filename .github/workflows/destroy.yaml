@@ -3,6 +3,12 @@ name: Manual Destroy
 on:
   workflow_dispatch:
 
+env:
+  TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "capstone-project-terraform-github-actions"
+  CONFIG_DIRECTORY: "./"
+  
 jobs:
   destroy_workspace:
     runs-on: ubuntu-latest
@@ -25,3 +31,7 @@ jobs:
         with:
           path: .
           workspace: ${{ github.head_ref }}
+
+      - name: Show Terraform Link
+        run: |
+          echo "Terraform Cloud Plan: ${{ steps.plan-run.outputs.run_link }}"
