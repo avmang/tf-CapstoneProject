@@ -1,7 +1,7 @@
-name: "Terraform Plan"
+name: "Manual Build Workflow"
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 env:
   TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
@@ -11,7 +11,6 @@ env:
 
 jobs:
   terraform:
-    # if: github.repository != 'avmang/tf-CapstoneProject'
 
     name: "Terraform Plan"
     runs-on: ubuntu-latest
@@ -22,20 +21,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: terraform fmt
-        uses: dflook/terraform-fmt@v1
-        with:
-          path: .
-
-      - name: terraform validate
-        uses: dflook/terraform-validate@v1
-        with:
-          path: .
-
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.0
-        continue-on-error: true #remove if it's neccessary
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0 
