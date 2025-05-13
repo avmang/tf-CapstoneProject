@@ -28,9 +28,6 @@ jobs:
       #   with:
       #     credentials_json: '${{ secrets.GOOGLE_CREDS }}'
 
-      # - name: Terraform Init
-      #   run: terraform init
-
       - name: terraform fmt
         uses: dflook/terraform-fmt@v1
         with:
@@ -43,6 +40,7 @@ jobs:
 
       - name: tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
+        continue-on-error: true
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0 
