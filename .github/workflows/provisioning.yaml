@@ -50,7 +50,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-                echo Terraform Cloud Plan
+                echo "Terraform Cloud Plan"
                 echo ${{ steps.plan-run.outputs.run_link }}
 
                
