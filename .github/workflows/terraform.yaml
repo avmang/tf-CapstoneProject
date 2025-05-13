@@ -28,6 +28,9 @@ jobs:
       #   with:
       #     credentials_json: '${{ secrets.GOOGLE_CREDS }}'
 
+      - name: Terraform Init
+        run: terraform init
+
       - name: terraform fmt
         uses: dflook/terraform-fmt@v1
         with:
