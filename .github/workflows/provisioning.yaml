@@ -44,14 +44,9 @@ jobs:
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
-      - name: Show link
-        uses: actions/github-script@v6
-        id: plan-comment
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-                echo "Terraform Cloud Plan"
-                echo ${{ steps.plan-run.outputs.run_link }}
+      - name: Show Terraform Link
+        run: |
+          echo "Terraform Cloud Plan: ${{ steps.plan-run.outputs.run_link }}"
 
                
           
