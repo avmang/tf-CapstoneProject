@@ -2,6 +2,8 @@ name: "Terraform Plan"
 
 on:
   pull_request:
+  issue_comment:                                     
+    types: [created, edited, deleted]
   
 env:
   TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
