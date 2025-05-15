@@ -1,21 +1,20 @@
 name: Terraform Apply
 
-on: [issue_comment]
+on:
+  issue_comment:                                       
+    types: [created, edited, deleted]
 
 jobs:
   apply:
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, 'terraform apply') }}
+    if: ${{ github.event.issue.pull_request != null && contains(github.event.comment.body, 'terraform apply') }}
     runs-on: ubuntu-latest
     name: Apply Terraform plan
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ github.event.issue.number }}/merge
+        uses: actions/checkout@v3
 
       - name: Terraform apply
         uses: dflook/terraform-apply@v1
         with:
-          path: my-terraform-config
+          path: .
