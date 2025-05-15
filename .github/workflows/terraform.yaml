@@ -101,6 +101,7 @@ jobs:
   apply:
     # if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
+    needs: terraform
     name: Apply Terraform plan
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
