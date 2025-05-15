@@ -99,7 +99,7 @@ jobs:
 
    
   apply:
-    if: ${{ contains(github.event.comment.body, 'terraform apply') }}
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, 'terraform apply') }}
     runs-on: ubuntu-latest
     name: Apply Terraform plan
     env:
