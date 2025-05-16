@@ -31,13 +31,13 @@ module "storage" {
   network = module.network.network
 }
 
-module "test_psa" {
-  source  = "terraform-google-modules/sql-db/google//modules/private_service_access"
-  version = "~> 25.2"
+# module "test_psa" {
+#   source  = "terraform-google-modules/sql-db/google//modules/private_service_access"
+#   version = "~> 25.2"
 
-  project_id      = var.project_id
-  vpc_network     = module.network.network_name
-  address         = "10.220.0.0"
-  deletion_policy = "ABANDON"
-  depends_on      = [ module.network ]
-}
+#   project_id      = var.project_id
+#   vpc_network     = module.network.network_name
+#   address         = "10.220.0.0"
+#   deletion_policy = "ABANDON"
+#   depends_on      = [ module.network ]
+# }
