@@ -1,28 +1,30 @@
-name: Apply
+name: Terraform Apply
 
 on:
   push:
     branches:
       - main
-env:
-  TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "capstone-project-terraform-github-actions"
-  CONFIG_DIRECTORY: "./"
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  apply:
+  terraform:
     runs-on: ubuntu-latest
-    name: Apply plan
+    name: Terraform Plan
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: terraform apply
-        uses: dflook/terraform-apply@v1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          path: .
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
