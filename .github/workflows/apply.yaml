@@ -1,20 +1,25 @@
-name: Terraform Apply
+name: Apply
 
 on:
-  issue_comment:                                       
-    types: [created, edited, deleted]
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   apply:
-    if: ${{ github.event.issue.pull_request != null && contains(github.event.comment.body, 'terraform apply') }}
     runs-on: ubuntu-latest
-    name: Apply Terraform plan
-
+    name: Apply plan
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Terraform apply
+      - name: terraform apply
         uses: dflook/terraform-apply@v1
         with:
           path: .
