@@ -9,3 +9,9 @@ variable "region" {
   type        = string
   default     = "europe-north1"
 }
+
+variable "GOOGLE_CREDENTIALS" {
+  description = "Service account credentials"
+  type        = string
+  sensitive   = true
+}
