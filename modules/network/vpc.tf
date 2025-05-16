@@ -9,4 +9,5 @@ resource "google_compute_subnetwork" "private_subnet" {
   ip_cidr_range = "10.0.1.0/24"
   region        = var.region
   project       = var.project_id
+  
 }
