@@ -17,6 +17,7 @@ module "gke" {
 module "iam" {
   source     = "./modules/iam"
   project_id = var.project_id
+  gar_repo = module.gar.gar_repo
 }
 
 module "network" {
