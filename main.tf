@@ -25,9 +25,19 @@ module "network" {
   region     = var.region
 }
 
-# module "storage" {
-#   source = "./modules/storage"
-#   # project_id = var.project_id
-#   # region = var.region
-# }
+module "storage" {
+  source = "./modules/storage"
+  region = var.region
+  network = module.network.network
+}
 
+module "test_psa" {
+  source  = "terraform-google-modules/sql-db/google//modules/private_service_access"
+  version = "~> 25.2"
+
+  project_id      = var.project_id
+  vpc_network     = module.network.network_name
+  address         = "10.220.0.0"
+  deletion_policy = "ABANDON"
+  depends_on      = [ module.network ]
+}
