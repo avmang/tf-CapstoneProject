@@ -69,16 +69,8 @@ jobs:
         run: terraform init
 
       - name: Show Terraform State List
-        run: terraform state list | tee tfstate.txt
-
-      - name: Upload State Output
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-state-list
-          path: tfstate.txt
-
-      - name: Add State Summary
         run: |
+          terraform state list >> tfstate.txt
           echo "## Terraform State Resources" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           head -n 100 tfstate.txt >> $GITHUB_STEP_SUMMARY
