@@ -6,9 +6,16 @@ terraform {
     }
   }
 
-  backend "gcs" {
-    bucket = "mavoyan-cp-terraform-backend"
-    prefix = "terraform/state"
+  # backend "gcs" {
+  #   bucket = "mavoyan-cp-terraform-backend"
+  #   prefix = "terraform/state"
+  # }
+  cloud {
+    organization = "MavoyanCapstoneProject"
+
+    workspaces {
+      name = "capstone-project-terraform-github-actions"
+    }
   }
 }
 
