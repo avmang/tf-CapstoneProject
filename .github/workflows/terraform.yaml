@@ -33,14 +33,6 @@ jobs:
         with:
           path: .
 
-      - name: Run tfsec and save output to summary
-        run: |
-          tfsec . > tfsec_output.txt
-          echo '### tfsec Results' >> $GITHUB_STEP_SUMMARY
-          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
-
-
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0 
         id: plan-upload
@@ -98,3 +90,22 @@ jobs:
               repo: context.repo.repo,
               body: output
             });
+
+  tfscan:
+    name: "Terraform Security Scan"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+      - name: Run tfsec and save output to summary
+        run: |
+          tfsec . > tfsec_output.txt
+          echo '### tfsec Results' >> $GITHUB_STEP_SUMMARY
+          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
