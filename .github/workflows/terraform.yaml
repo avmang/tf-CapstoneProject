@@ -94,20 +94,22 @@ jobs:
   tfscan:
     name: "Terraform Security Scan"
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install tfscan
-        run: curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
-      - name: tfscan
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+      
+      - name: tfsec summary output
+        if: always()
         run: |
-          tfsec . > tfsec_output.txt
           echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
+          cat tfsec.sarif | jq '.' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       
