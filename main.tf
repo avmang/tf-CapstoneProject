@@ -29,6 +29,7 @@ module "storage" {
   source = "./modules/storage"
   region = var.region
   network = module.network.network
+  network_connnection = module.network.network_connection
 }
 
 # module "test_psa" {

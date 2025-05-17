@@ -8,3 +8,8 @@ variable "network" {
   description = "The name of the VPC network for GKE cluster."
   type        = string
 }
+
+variable "network_connnection" {
+  description = "Link of VPC network to be used for establishing a private service networking connection for Cloud SQL."
+  type        = string
+}

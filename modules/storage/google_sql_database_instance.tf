@@ -3,7 +3,10 @@ resource "google_sql_database_instance" "mysql-instance" {
   region           = var.region
   database_version = "MYSQL_8_0"
 
-  depends_on = [ var.network ] 
+  depends_on = [
+    var.network_connnection
+  ]
+ 
 
   settings {
     tier = "db-f1-micro"
