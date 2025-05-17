@@ -2,7 +2,7 @@ name: "Terraform Plan"
 
 on:
   pull_request:
-  
+
 env:
   TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
@@ -11,12 +11,9 @@ env:
 
 jobs:
   terraform:
-    # if: github.repository != 'avmang/tf-CapstoneProject'
-
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     permissions:
-      # so GitHub can check out this repo using the default github.token
       contents: read
       pull-requests: write
     steps:
@@ -61,7 +58,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -76,7 +72,6 @@ jobs:
                \`\`\`
                [Terraform Cloud Plan](${{ steps.plan-run.outputs.run_link }})
                `;
-            // 3. Delete previous comment so PR timeline makes sense
             if (botComment) {
               github.rest.issues.deleteComment({
                 owner: context.repo.owner,
@@ -94,25 +89,23 @@ jobs:
   tfscan:
     name: "Terraform Security Scan"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run tfsec
+      - name: Run tfsec and save output
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
+          format: default
+          additional_args: --out tfsec_output.txt
           soft_fail: true
 
-      - name: print output
-        run: cat tfsec.sarif
-        
-      - name: tfsec summary output
+      - name: Print tfsec output in summary
         if: always()
         run: |
           echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          cat tfsec.sarif | jq '.' >> $GITHUB_STEP_SUMMARY
+          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-
-      
-
