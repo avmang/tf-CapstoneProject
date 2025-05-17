@@ -8,7 +8,7 @@ module "gke" {
   source     = "./modules/gke"
   project_id = var.project_id
   region     = var.region
-  network    = module.network.network
+  network    = module.network.vpc
   subnetwork = module.network.subnetwork
   sa         = module.iam.k8s-sa
   depends_on = [module.iam]
@@ -29,7 +29,8 @@ module "network" {
 module "storage" {
   source = "./modules/storage"
   region = var.region
-  network = module.network.network
+  network = module.network.vpc
+  depends_on = [ module.network ]
 }
 
 # module "test_psa" {
