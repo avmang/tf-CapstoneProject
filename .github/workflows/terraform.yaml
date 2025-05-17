@@ -10,7 +10,7 @@ env:
   CONFIG_DIRECTORY: "./"
 
 jobs:
-  terrafor-plan:
+  terraform-plan:
     # if: github.repository != 'avmang/tf-CapstoneProject'
 
     name: "Terraform Plan"
