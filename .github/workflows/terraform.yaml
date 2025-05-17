@@ -99,7 +99,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           format: default
-          additional_args: --out tfsec_output.txt
+          additional_args: --no-color --out tfsec_output.txt
           soft_fail: true
 
       - name: Print tfsec output in summary
