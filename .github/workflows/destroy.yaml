@@ -15,7 +15,6 @@ jobs:
     name: Destroy Terraform Workspace
     env:
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,24 +23,25 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init (Cloud backend)
-        run: terraform init
+        run: terraform init -input=false
 
       - name: First Destroy Attempt
         id: first_try
         continue-on-error: true
         run: |
-          terraform destroy -auto-approve >> destroy_output.txt
-          echo "## Terraform Destroy Summary" >> $GITHUB_STEP_SUMMARY
+          echo "🔁 Running terraform destroy..."
+          terraform destroy -auto-approve > destroy_output.txt 2>&1
+          echo "## ⚠️ Terraform Destroy Summary (1st Try)" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          head -n 100 destroy_output.txt >> $GITHUB_STEP_SUMMARY
+          if [ -f destroy_output.txt ]; then head -n 100 destroy_output.txt >> $GITHUB_STEP_SUMMARY; else echo "No output found." >> $GITHUB_STEP_SUMMARY; fi
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Retry Destroy (if failed)
         if: failure() && steps.first_try.outcome == 'failure'
         run: |
-          echo "Retrying destroy..." >> destroy_output.txt
-          terraform destroy -auto-approve >> destroy_output.txt
-          echo "## Terraform Destroy Summary" >> $GITHUB_STEP_SUMMARY
+          echo "🔁 Retrying terraform destroy..." >> destroy_output.txt
+          terraform destroy -auto-approve >> destroy_output.txt 2>&1
+          echo "## ❗ Terraform Destroy Summary (Retry)" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           head -n 100 destroy_output.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
