@@ -112,7 +112,7 @@ jobs:
                   --format text --out tfsec-report/tfsec.txt
 
       - name: Upload tfsec report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: tfsec-report
           path: tfsec-report/
