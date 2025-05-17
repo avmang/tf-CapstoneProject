@@ -101,9 +101,11 @@ jobs:
       - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-      
+          soft_fail: true
+
+      - name: print output
+        run: cat tfsec.sarif
+        
       - name: tfsec summary output
         if: always()
         run: |
