@@ -11,11 +11,9 @@ env:
 
 jobs:
   terraform-plan:
-
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     permissions:
-      # so GitHub can check out this repo using the default github.token
       contents: read
       pull-requests: write
     steps:
@@ -48,6 +46,12 @@ jobs:
         run: |
           echo "Terraform Cloud Plan: ${{ steps.plan-run.outputs.run_link }}"
 
+      - name: Add Plan Summary
+        run: |
+          echo "## 📦 Terraform Plan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workspace**: \`${{ env.TF_WORKSPACE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Terraform Plan Link**: [View Plan in Terraform Cloud](${{ steps.plan-run.outputs.run_link }})" >> $GITHUB_STEP_SUMMARY
+
   state-list:
     name: "Terraform State List"
     runs-on: ubuntu-latest
@@ -65,4 +69,17 @@ jobs:
         run: terraform init
 
       - name: Show Terraform State List
-        run: terraform state list
+        run: terraform state list | tee tfstate.txt
+
+      - name: Upload State Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-state-list
+          path: tfstate.txt
+
+      - name: Add State Summary
+        run: |
+          echo "## Terraform State Resources" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -n 100 tfstate.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

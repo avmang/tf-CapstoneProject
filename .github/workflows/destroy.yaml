@@ -29,8 +29,24 @@ jobs:
       - name: First Destroy Attempt
         id: first_try
         continue-on-error: true
-        run: terraform destroy -auto-approve
+        run: |
+          terraform destroy -auto-approve | tee destroy_output.txt
 
       - name: Retry Destroy (if failed)
         if: failure() && steps.first_try.outcome == 'failure'
-        run: terraform destroy -auto-approve
+        run: |
+          echo "Retrying destroy..." >> destroy_output.txt
+          terraform destroy -auto-approve | tee -a destroy_output.txt
+
+      - name: Upload Destroy Log
+        uses: actions/upload-artifact@v3
+        with:
+          name: destroy-log
+          path: destroy_output.txt
+
+      - name: Add Destroy Summary
+        run: |
+          echo "## Terraform Destroy Summary" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -n 100 destroy_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
