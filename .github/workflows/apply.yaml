@@ -32,8 +32,15 @@ jobs:
           speculative: false  
 
       - name: Create Run 
+        id: apply-run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
-          plan_only: false  
+          plan_only: false
+
+      - name: Add Terraform Apply Summary
+        run: |
+          echo "## Terraform Apply Run" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workspace**: \`${{ env.TF_WORKSPACE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Terraform Cloud Link**: [Apply Run Link](${{ steps.apply-run.outputs.run_link }})" >> $GITHUB_STEP_SUMMARY
