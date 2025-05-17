@@ -9,7 +9,7 @@ variable "network" {
   type        = string
 }
 
-variable "network_connnection" {
-  description = "Link of VPC network to be used for establishing a private service networking connection for Cloud SQL."
-  type        = string
-}
+# variable "network_connnection" {
+#   description = "Link of VPC network to be used for establishing a private service networking connection for Cloud SQL."
+#   type        = string
+# }
