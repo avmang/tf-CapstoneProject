@@ -100,15 +100,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install tfsec
-        run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
-      - name: Run tfsec and save output to summary
+      - name: Run tfsec (official action)
+        uses: aquasecurity/tfsec-action@v1.0.0
         continue-on-error: true
+
+      - name: Append tfsec results to summary
+        if: always()
         run: |
-          tfsec . > tfsec_output.txt
-          echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
+          echo "## 🔐 tfsec Results" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
+          cat results.sarif.json || echo "No SARIF output found" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
