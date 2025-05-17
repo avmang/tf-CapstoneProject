@@ -94,6 +94,7 @@ jobs:
   tfscan:
     name: "Terraform Security Scan"
     runs-on: ubuntu-latest
+    needs: terraform
 
     steps:
       - name: Checkout
@@ -104,8 +105,10 @@ jobs:
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
       - name: Run tfsec and save output to summary
+        continue-on-error: true
         run: |
           tfsec . > tfsec_output.txt
-          echo '### tfsec Results' >> $GITHUB_STEP_SUMMARY
+          echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
           cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
+          echo '```' >> $GITHUB_STEP_SUMMARY
