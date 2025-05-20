@@ -30,6 +30,7 @@ module "storage" {
   source = "./modules/storage"
   region = var.region
   network = module.network.vpc
+  project_id = var.project_id
   depends_on = [ module.network ]
 }
 
