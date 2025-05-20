@@ -15,3 +15,9 @@ variable "GOOGLE_CREDENTIALS" {
   type        = string
   sensitive   = true
 }
+
+variable "db_password" {
+  description = "Password for Petclinic DB user"
+  type        = string
+  sensitive   = true
+}

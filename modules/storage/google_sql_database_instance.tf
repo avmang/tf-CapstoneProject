@@ -14,13 +14,17 @@ resource "google_sql_database_instance" "mysql-instance" {
   }
 }
 
-# resource "google_sql_user" "app_user" {
-#   name     = "appuser"
-#   instance = google_sql_database_instance.mysql-instance.name
-  
-# }
+resource "google_sql_database" "petclinic" {
+  name     = "petclinic"
+  instance = google_sql_database_instance.mysql-instance.name
+}
 
-# resource "google_sql_database" "app_db" {
-#   name     = "appdb"
-#   instance = google_sql_database_instance.mysql-instance.name
-# }
+
+resource "google_sql_user" "petclinic_user" {
+  name     = "petclinic"
+  instance = google_sql_database_instance.mysql-instance.name
+  password = var.db_password
+}
+
+
+

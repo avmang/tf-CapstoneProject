@@ -13,6 +13,6 @@ resource "google_artifact_registry_repository_iam_binding" "k8s_gar_access" {
   repository = google_artifact_registry_repository.spring_repository.name
   role = "roles/artifactregistry.reader"
   members = [
-    "serviceAccount:gke-gar-access@gd-gcp-internship-devops.iam.gserviceaccount.com"
+    "serviceAccount:gke-gar-access@gd-gcp-internship-devops.iam.gserviceaccount.com" # to change
   ]
 }
