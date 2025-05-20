@@ -31,6 +31,7 @@ module "storage" {
   region = var.region
   network = module.network.vpc
   project_id = var.project_id
+  db_password = var.db_password
   depends_on = [ module.network ]
 }
 

@@ -9,6 +9,12 @@ variable "network" {
   type        = string
 }
 
+variable "db_password" {
+  description = "Password for Petclinic DB user"
+  type        = string
+  sensitive   = true
+}
+
 # variable "network_connnection" {
 #   description = "Link of VPC network to be used for establishing a private service networking connection for Cloud SQL."
 #   type        = string
