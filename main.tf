@@ -2,6 +2,7 @@ module "gar" {
   source     = "./modules/gar"
   project_id = var.project_id
   region     = var.region
+  depends_on = [ module.iam ]
 }
 
 module "gke" {
@@ -10,7 +11,7 @@ module "gke" {
   region     = var.region
   network    = module.network.vpc
   subnetwork = module.network.subnetwork
-  sa         = module.iam.k8s-sa
+  sa_email   = module.iam.k8s-sa-email
   depends_on = [module.iam]
 }
 
