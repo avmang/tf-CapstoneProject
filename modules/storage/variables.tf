@@ -13,3 +13,8 @@ variable "network" {
 #   description = "Link of VPC network to be used for establishing a private service networking connection for Cloud SQL."
 #   type        = string
 # }
+
+variable "project_id" {
+  description = "The ID of the project in which to create the resources."
+  type        = string
+}

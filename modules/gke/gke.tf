@@ -34,6 +34,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
   node_config {
     machine_type    = "e2-medium"
-    service_account = "gke-gar-access@gd-gcp-internship-devops.iam.gserviceaccount.com" // need to be changed
+    service_account = var.sa
   }
 }

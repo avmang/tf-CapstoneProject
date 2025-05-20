@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The ID of the project in which to create the resources."
   type        = string
-  default     = "gd-gcp-internship-devops"
+  default     = "capstoneproject-460317"
 }
 
 variable "region" {
