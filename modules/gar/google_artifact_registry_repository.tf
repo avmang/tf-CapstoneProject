@@ -15,5 +15,4 @@ resource "google_artifact_registry_repository_iam_binding" "k8s_gar_access" {
   members = [
     "serviceAccount:gke-gar-access@gd-gcp-internship-devops.iam.gserviceaccount.com" # to change
   ]
-  
 }

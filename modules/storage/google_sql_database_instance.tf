@@ -23,7 +23,7 @@ resource "google_sql_database" "petclinic" {
 resource "google_sql_user" "petclinic_user" {
   name     = "petclinic"
   instance = google_sql_database_instance.mysql-instance.name
-  password = var.db_password
+  password_wo  = var.db_password
 }
 
 
