@@ -26,7 +26,7 @@ variable "subnetwork" {
   type        = string
 }
 
-variable "sa" {
+variable "sa_email" {
   description = "Service Account for gke."
   type        = string
 }
