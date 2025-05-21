@@ -21,3 +21,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "project_number" {
+  description = "The number of the project in which to create the resources."
+  type        = number
+  default     = 999898490929
+}

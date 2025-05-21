@@ -18,6 +18,7 @@ module "gke" {
 module "iam" {
   source     = "./modules/iam"
   project_id = var.project_id
+  project_number = var.project_number
 }
 
 module "network" {
