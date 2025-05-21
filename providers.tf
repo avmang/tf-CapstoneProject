@@ -13,9 +13,9 @@ terraform {
   cloud {
     organization = "MavoyanCapstoneProject"
 
-    workspaces {
-      name = "capstone-project-terraform-github-actions"
-    }
+    workspaces { 
+      name = "gd-cloud" 
+    } 
   }
 }
 

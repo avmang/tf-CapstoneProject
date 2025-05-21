@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The ID of the project in which to create the resources."
   type        = string
-  default     = "capstoneproject-460317"
+  default     = "gd-gcp-internship-devops"
 }
 
 variable "region" {
@@ -26,4 +26,17 @@ variable "project_number" {
   description = "The number of the project in which to create the resources."
   type        = number
   default     = 999898490929
+}
+
+variable "network" {
+  description = "Network"
+  type        = string
+  default = "mavoyan-network"
+}
+
+
+variable "subnetwork" {
+  description = "Network"
+  type        = string
+  default     = "mavoyan-subnetwork"
 }
