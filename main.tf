@@ -35,6 +35,13 @@ module "storage" {
   depends_on = [ module.network ]
 }
 
+module "gce" {
+  source = "./modules/gce"
+  region = var.region
+  network = module.network.vpc
+  project_id = var.project_id
+  subnetwork = module.network.subnetwork_name
+}
 # module "test_psa" {
 #   source  = "terraform-google-modules/sql-db/google//modules/private_service_access"
 #   version = "~> 25.2"

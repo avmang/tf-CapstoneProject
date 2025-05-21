@@ -6,6 +6,9 @@ output "subnetwork" {
   value = google_compute_subnetwork.private_subnet.self_link
 }
 
+output "subnetwork_name" {
+  value = google_compute_subnetwork.private_subnet.name
+}
 output "network_name" {
   value = google_compute_network.vpc.name  
 }
