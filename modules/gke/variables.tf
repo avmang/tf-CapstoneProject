@@ -16,17 +16,17 @@ variable "node_count" {
   default     = 1
 }
 
-variable "network" {
-  description = "The name of the VPC network for GKE cluster."
-  type        = string
-}
+# variable "network" {
+#   description = "The name of the VPC network for GKE cluster."
+#   type        = string
+# }
 
-variable "subnetwork" {
-  description = "The name of the subnetwork."
-  type        = string
-}
+# variable "subnetwork" {
+#   description = "The name of the subnetwork."
+#   type        = string
+# }
 
-variable "sa_email" {
-  description = "Service Account for gke."
-  type        = string
-}
+# variable "sa_email" {
+#   description = "Service Account for gke."
+#   type        = string
+# }

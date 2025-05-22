@@ -7,12 +7,12 @@ resource "google_artifact_registry_repository" "spring_repository" {
 
 }
 
-resource "google_artifact_registry_repository_iam_binding" "k8s_gar_access" {
-  project = var.project_id
-  location = var.region
-  repository = google_artifact_registry_repository.spring_repository.name
-  role = "roles/artifactregistry.reader"
-  members = [
-    "serviceAccount:gke-gar-access@${var.project_id}.iam.gserviceaccount.com"
-  ]
-}
+# resource "google_artifact_registry_repository_iam_binding" "k8s_gar_access" {
+#   project = var.project_id
+#   location = var.region
+#   repository = google_artifact_registry_repository.spring_repository.name
+#   role = "roles/artifactregistry.reader"
+#   members = [
+#     "serviceAccount:gke-gar-access@${var.project_id}.iam.gserviceaccount.com"
+#   ]
+# }

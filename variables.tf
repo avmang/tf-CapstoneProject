@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The ID of the project in which to create the resources."
   type        = string
-  default     = "capstoneproject-460317"
+  default     = "gd-gcp-gridu-devops-t1-t2"
 }
 
 variable "region" {
@@ -25,5 +25,5 @@ variable "db_password" {
 variable "project_number" {
   description = "The number of the project in which to create the resources."
   type        = number
-  default     = 999898490929
+  default     = 71936227901
 }
