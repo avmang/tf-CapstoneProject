@@ -1,75 +1,107 @@
-name: Fetch Terraform Cloud Plan Output
+
+name: "Terraform Plan"
 
 on:
   pull_request:
 
+env:
+  TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+  CONFIG_DIRECTORY: "./"
+
 jobs:
-  fetch-plan:
+  terraform:
+    if: github.repository != 'hashicorp-education/learn-terraform-github-actions'
+    name: "Terraform Plan"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - name: Get Latest Run ID
-        id: get-run
-        run: |
-          RUN_ID=$(curl \
-            --header "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
-            "https://app.terraform.io/api/v2/workspaces/${{ vars.TF_WORKSPACE_ID }}/runs" \
-            | jq -r '.data[0].id')
-          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Wait for Run to Complete
-        run: |
-          STATUS=""
-          while [[ "$STATUS" != "planned" && "$STATUS" != "applied" && "$STATUS" != "errored" ]]
-          do
-            STATUS=$(curl -s \
-              --header "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
-              "https://app.terraform.io/api/v2/runs/${{ steps.get-run.outputs.run_id }}" \
-              | jq -r '.data.attributes.status')
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: plan-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.CONFIG_DIRECTORY }}
+          speculative: true
+          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
+          token: ${{ env.TF_API_TOKEN }}
 
-            echo "Current run status: $STATUS"
+      - name: Create Plan Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        id: plan-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
+          plan_only: true
 
-            if [[ "$STATUS" == "planned" || "$STATUS" == "applied" || "$STATUS" == "errored" ]]; then
-              break
-            fi
+      - name: Get Plan Output
+        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
+        id: plan-output
+        with:
+          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
-            echo "Waiting 15 seconds..."
-            sleep 15
-          done
-
-      - name: Fetch Plan Output
-        run: |
-          PLAN_OUTPUT=$(curl -s \
-            --header "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
-            "https://app.terraform.io/api/v2/runs/${{ steps.get-run.outputs.run_id }}/plan/json-output")
-
-          echo "$PLAN_OUTPUT" > plan.json
-          echo "Fetched plan output."
-
-      - name: Print Plan Summary
-        run: |
-          echo '## Terraform Plan Summary' >> $GITHUB_STEP_SUMMARY
-          cat plan.json | jq '.resource_changes[] | {action: .change.actions, address: .address}' >> $GITHUB_STEP_SUMMARY
+      - name: Update PR
+        uses: actions/github-script@v6
+        id: plan-comment
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Cloud Plan Output')
+            });
+            const output = `#### Terraform Cloud Plan Output
+               \`\`\`
+               Plan: ${{ steps.plan-output.outputs.add }} to add, ${{ steps.plan-output.outputs.change }} to change, ${{ steps.plan-output.outputs.destroy }} to destroy.
+               \`\`\`
+               [Terraform Cloud Plan](${{ steps.plan-run.outputs.run_link }})
+               `;
+            // 3. Delete previous comment so PR timeline makes sense
+            if (botComment) {
+              github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+              });
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
 
   tfscan:
-      name: "Terraform Security Scan"
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+    name: "Terraform Security Scan"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Run tfsec and save output
-          uses: aquasecurity/tfsec-action@v1.0.0
-          with:
-            format: default
-            additional_args: --no-color --out tfsec_output.txt
-            soft_fail: true
+      - name: Run tfsec and save output
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          format: default
+          additional_args: --no-color --out tfsec_output.txt
+          soft_fail: true
 
-        - name: Print tfsec output in summary
-          if: always()
-          run: |
-            echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+      - name: Print tfsec output in summary
+        if: always()
+        run: |
+          echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
