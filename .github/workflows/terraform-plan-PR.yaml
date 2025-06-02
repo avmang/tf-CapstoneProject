@@ -1,12 +1,13 @@
+
 name: "Terraform Plan"
 
 on:
   pull_request:
 
 env:
-  TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
-  TF_WORKSPACE: ${{ vars.TF_WORKSPACE}}
-  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+  TF_CLOUD_ORGANIZATION: "MavoyanCapstoneProject"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "tf-CapstoneProject"
   CONFIG_DIRECTORY: "./"
 
 jobs:
@@ -28,6 +29,8 @@ jobs:
           workspace: ${{ env.TF_WORKSPACE }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           speculative: true
+          organization: ${{ env.TF_CLOUD_ORGANIZATION }}
+          token: ${{ env.TF_API_TOKEN }}
 
       - name: Create Plan Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
@@ -80,25 +83,25 @@ jobs:
             });
 
   tfscan:
-      name: "Terraform Security Scan"
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+    name: "Terraform Security Scan"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Run tfsec and save output
-          uses: aquasecurity/tfsec-action@v1.0.0
-          with:
-            format: default
-            additional_args: --no-color --out tfsec_output.txt
-            soft_fail: true
+      - name: Run tfsec and save output
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          format: default
+          additional_args: --no-color --out tfsec_output.txt
+          soft_fail: true
 
-        - name: Print tfsec output in summary
-          if: always()
-          run: |
-            echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+      - name: Print tfsec output in summary
+        if: always()
+        run: |
+          echo '## 🔐 tfsec Results' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat tfsec_output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
