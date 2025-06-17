@@ -27,14 +27,14 @@ module "gke" {
 #   region     = var.region
 # }
 
-# module "storage" {
-#   source = "./modules/storage"
-#   region = var.region
-#   network = module.network.vpc
-#   project_id = var.project_id
-#   db_password = var.db_password
-#   depends_on = [ module.network ]
-# }
+module "storage" {
+  source = "./modules/storage"
+  region = var.region
+  # network = module.network.vpc
+  project_id = var.project_id
+  db_password = var.db_password
+  # depends_on = [ module.network ]
+}
 
 # module "gce" {
 #   source = "./modules/gce"
