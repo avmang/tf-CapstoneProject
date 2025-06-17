@@ -3,5 +3,5 @@
 #   purpose       = "VPC_PEERING"
 #   address_type  = "INTERNAL"
 #   prefix_length = 16
-#   network       = google_compute_network.vpc.id
+#   network       = "projects/${var.project_id}/global/networks/default"
 # }
